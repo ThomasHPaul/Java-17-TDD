@@ -1,0 +1,16 @@
+Requirement:
+       Truncate title, 1st paragraph or another string with "..."
+       if over character limit (width must be flexible)
+
+
+Think:
+---------------------
+Inputs?
+    - String
+    - Character limit
+
+Tests:
+---------------------
+
+    - Char limit reached -> truncate with ...
+    - Char limit not reached -> no change
