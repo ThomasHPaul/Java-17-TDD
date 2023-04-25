@@ -13,4 +13,22 @@ public class StringUtilTest {
 
         Assertions.assertEquals("The economy...", StringUtil.truncate(input, limit));
     }
+
+    @Test
+    public void limitNotReached_StringNotChanged() {
+
+        String input = "The economy is about to";  // length 23
+        int limit = 50;
+
+        Assertions.assertEquals("The economy is about to", StringUtil.truncate(input, limit));
+    }
+
+    @Test
+    public void limitNotReachedAtBorder_StringNotChanged() {
+
+        String input = "The economy is about to";  // length 23
+        int limit = 23;
+
+        Assertions.assertEquals("The economy is about to", StringUtil.truncate(input, limit));
+    }
 }
