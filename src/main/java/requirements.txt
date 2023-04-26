@@ -14,3 +14,14 @@ Tests:
 
     - Char limit reached -> truncate with ...
     - Char limit not reached -> no change
+
+More tests:
+
+    - Invalid String (null)     TODO: blank "  " or empty "" strings
+    - Invalid limit (0 or less)
+
+More complex tests (combinatorics):
+
+    What if?
+        - input < ellipsis
+        - input == ellipsis
