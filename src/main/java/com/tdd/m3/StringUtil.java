@@ -13,6 +13,15 @@ public class StringUtil {
         if(limit < 1) {
             throw new IllegalArgumentException("Limit input must be greater than 0");
         }
+        if(cutOffChars == null) {
+            throw new IllegalArgumentException("String cutOffChars must not be null");
+        }
+        if(cutOffChars.equals("")) {
+            throw new IllegalArgumentException("String cutOffChars cannot not be empty");
+        }
+        if(cutOffCharsContainsOnlySpaceOrSpaceBeforeChars(cutOffChars)) {
+            throw new IllegalArgumentException("String cutOffChars cannot be only spaces and cannot start with spaces");
+        }
 
         String ellipsis = "...";
         if(inputTooShort(input, limit, ellipsis)) {
@@ -20,6 +29,17 @@ public class StringUtil {
         }
 
         return input.substring(0, limit) + ellipsis;
+    }
+
+    // TODO need to split below method into checkingForOnlySpaces & checkingForSpacesBeforeChars
+    private static boolean cutOffCharsContainsOnlySpaceOrSpaceBeforeChars(String cutOffChars) {
+        for(int i = 0; i < cutOffChars.length(); i++) {
+            char currentChar = cutOffChars.charAt(i);
+            if(currentChar != ' ') {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static String truncateWithEllipsis(String input, int limit) {

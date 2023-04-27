@@ -40,14 +40,19 @@ public class StringUtilTest {
 
     @ParameterizedTest
     @MethodSource("invalidArgumentProvider")
-    public void invalidInput_isRejected() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> StringUtil.truncateWithEllipsis(null, 5));
+    public void invalidInput_isRejected(String input, int limit, String cutOffChars) {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> StringUtil.truncate(input, limit, cutOffChars));
     }
 
     public static Stream<Arguments> invalidArgumentProvider() {
         return Stream.of(
-                Arguments.of(null, 5),
-                Arguments.of("Some input", 0)
+                Arguments.of(null, 5, "..."),
+                Arguments.of("Some input", 0, "..."),
+                Arguments.of("Some input", 5, null),
+                Arguments.of("Some input", 5, ""),
+                Arguments.of("Some input", 5, "   "),
+                Arguments.of("Some input", 5, "                 "),
+                Arguments.of("Some input", 5, "     ...")
         );
     }
 
