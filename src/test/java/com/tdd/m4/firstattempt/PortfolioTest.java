@@ -1,11 +1,9 @@
-package com.tdd.m4;
+package com.tdd.m4.firstattempt;
 
+import com.tdd.m4.firstattempt.Portfolio;
+import com.tdd.m4.firstattempt.Stock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import javax.sound.sampled.Port;
 
 public class PortfolioTest {
 

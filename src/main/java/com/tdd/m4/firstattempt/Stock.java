@@ -1,4 +1,4 @@
-package com.tdd.m4;
+package com.tdd.m4.firstattempt;
 
 public class Stock {
 

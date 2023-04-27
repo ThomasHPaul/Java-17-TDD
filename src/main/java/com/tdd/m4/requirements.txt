@@ -10,10 +10,14 @@ Think stage:
 --------------------
 
     - Portfolio
-    - Stock (has qty, price, value (qty * px) )
+    - Position - (has qty, price, value (qty * px) )
+    - Stock - company name
 
 
 Tests:
-    - zero stocks = zero value
-    - one stock shows correct total value
-    - two different stocks must show total correct value
+    - no stocks shows nothing
+        - one position shows correct data for that stock (px, qty, value)
+        - two positions shows correct data for those stock (px, qty, value)
+        - adding twice to a position merges the data (px, qty, value)
+            - sum the Qty
+            - avg the Px
