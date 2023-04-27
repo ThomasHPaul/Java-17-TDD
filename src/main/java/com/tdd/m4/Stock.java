@@ -21,4 +21,9 @@ public class Stock {
     public double totalValue() {
         return qty * px;
     }
+
+    @Override
+    public String toString() {
+        return String.format("{ %s | Qty: %s | Px: %s | Value: %s}", symbol, qty, px, qty * px);
+    }
 }
