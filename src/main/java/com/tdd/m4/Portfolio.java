@@ -33,7 +33,20 @@ public class Portfolio {
         }
     }
 
+    public double getTotalValue() {
+        return positions.values().stream()
+                .mapToDouble(Position::getValue)
+                .sum();
+    }
+
     public Position getPosition(String symbol) {
         return positions.get(symbol);
+    }
+
+    public void print() {
+        positions.values().forEach(System.out::println);
+
+        System.out.println("=========================");
+        System.out.println(getTotalValue());
     }
 }
