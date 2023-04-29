@@ -1,13 +1,2 @@
 
 TODO - math with floats - use Money lib
-
-should we create portfolios with existing stocks?
-no, create an empty portfolio first, then add() stocks
-
-TODO - refactor test once I implement all functionality
-
-
-hide implementation of hashMap specific method (size)
-
-could use size (works for all collections)
-stream?
