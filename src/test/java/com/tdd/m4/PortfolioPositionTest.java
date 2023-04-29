@@ -1,12 +1,16 @@
 package com.tdd.m4;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
+
+
 
 public class PortfolioPositionTest {
 
@@ -18,7 +22,7 @@ public class PortfolioPositionTest {
     @ParameterizedTest
     @MethodSource("portfolioPositionCountArgumentProvider")
     public void portfolioReturnsCorrectPositionCount(int size, Portfolio portfolio) {
-        Assertions.assertEquals(size, portfolio.size());
+        assertEquals(size, portfolio.size());
     }
 
     private static Stream<Arguments> portfolioPositionCountArgumentProvider() {
@@ -43,7 +47,6 @@ public class PortfolioPositionTest {
         portfolio5.add(position2);
         portfolio5.add(position3);
 
-
         return Stream.of(
                 Arguments.of(0, portfolio1),
                 Arguments.of(1, portfolio2),
@@ -54,39 +57,63 @@ public class PortfolioPositionTest {
     }
 
     @Test
-    void positionAddedThenRemovedFromEmptyPortfolio_ReturnsZeroPositions() {
-
-        portfolio.add(position(microsoft, 10, 120));
-        portfolio.remove(microsoft);
-
-        Assertions.assertEquals(0, portfolio.size());
-    }
-
-    @Test
     void positionPartiallySold_PositionStillInPortfolio() {
 
         portfolio.add(position(microsoft, 10, 250));
-        portfolio.sell(microsoft, 5);
+        portfolio.sell(microsoft,5);
 
-        Assertions.assertTrue(portfolio.containsPosition(microsoft));
+        assertTrue(portfolio.containsPosition(microsoft));
     }
 
     @Test
     void positionPartiallySold_PositionValueUpdated() {
 
         portfolio.add(position(microsoft, 10, 250));
-        portfolio.sell(microsoft, 5);
+        portfolio.sell(microsoft,5);
 
-        Assertions.assertEquals(1250, portfolio.getPosition(microsoft).getValue());
+        assertEquals(1250, portfolio.getPosition(microsoft).getValue());
     }
 
     @Test
     void positionPartiallySold_PositionHasCorrectQuantityRemaining() {
 
         portfolio.add(position(microsoft, 10, 250));
-        portfolio.sell(microsoft, 5);
+        portfolio.sell(microsoft,5);
 
-        Assertions.assertEquals(5, portfolio.getPosition(microsoft).getQty());
+        assertEquals(5, portfolio.getPosition(microsoft).getQty());
+    }
+
+    @Test
+    void positionSellZero_PositionUnchanged() {
+        portfolio.add(position(microsoft, 10, 250));
+        portfolio.sell(microsoft,0);
+
+        assertEquals(10, portfolio.getPosition(microsoft).getQty());
+    }
+
+    @Test
+    void positionOversell_PositionThrowsError() {
+        portfolio.add(position(microsoft, 10, 250));
+
+        assertThrows(ArithmeticException.class,
+                () -> portfolio.sell(microsoft,100),
+                "Cannot sell more shares than in position");
+    }
+
+    @Test
+    void positionSellNegativeAmount_PositionThrowsError() {
+        portfolio.add(position(microsoft, 10, 250));
+
+        assertThrows(ArithmeticException.class,
+                () -> portfolio.sell(microsoft,-1),
+                "Cannot sell negative shares");
+    }
+
+    @Test
+    void positionSellAllShares_PositionRemovedFromPortfolio() {
+        portfolio.add(position(microsoft, 10, 250));
+        portfolio.sell(microsoft, 10);
+        assertEquals(0, portfolio.size());
     }
 
     // TODO Introduce Money API, does rounding api & understands currency - jsr 354 - Money and Currency API
@@ -97,11 +124,11 @@ public class PortfolioPositionTest {
         String symbol = microsoft;
 
         portfolio.add(position(microsoft, 10, 260));
-        Assertions.assertEquals(1, portfolio.size());
+        assertEquals(1, portfolio.size());
 
-        Assertions.assertEquals(10, portfolio.getPosition(symbol).getQty());
-        Assertions.assertEquals(260, portfolio.getPosition(symbol).getPx());
-        Assertions.assertEquals(2600, portfolio.getPosition(symbol).getValue());
+        assertEquals(10, portfolio.getPosition(symbol).getQty());
+        assertEquals(260, portfolio.getPosition(symbol).getPx());
+        assertEquals(2600, portfolio.getPosition(symbol).getValue());
     }
 
     @Test
@@ -110,19 +137,19 @@ public class PortfolioPositionTest {
         portfolio.add(position(microsoft, 10, 260));
         portfolio.add(position(apple, 2, 150));
 
-        Assertions.assertEquals(2, portfolio.size());
+        assertEquals(2, portfolio.size());
 
         // msft
         var microsoftPosition = portfolio.getPosition(microsoft);
-        Assertions.assertEquals(10, microsoftPosition.getQty());
-        Assertions.assertEquals(260, microsoftPosition.getPx());
-        Assertions.assertEquals(2600, microsoftPosition.getValue());
+        assertEquals(10, microsoftPosition.getQty());
+        assertEquals(260, microsoftPosition.getPx());
+        assertEquals(2600, microsoftPosition.getValue());
 
         // aapl
         var applePosition = portfolio.getPosition(apple);
-        Assertions.assertEquals(2, applePosition.getQty());
-        Assertions.assertEquals(150, applePosition.getPx());
-        Assertions.assertEquals(300, applePosition.getValue());
+        assertEquals(2, applePosition.getQty());
+        assertEquals(150, applePosition.getPx());
+        assertEquals(300, applePosition.getValue());
     }
 
     @Test
@@ -131,7 +158,7 @@ public class PortfolioPositionTest {
         portfolio.add(position(microsoft, 10, 260));
         portfolio.add(position(microsoft, 5, 200));
 
-        Assertions.assertEquals(1, portfolio.size());
+        assertEquals(1, portfolio.size());
     }
 
     @Test
@@ -140,7 +167,7 @@ public class PortfolioPositionTest {
         portfolio.add(position(microsoft, 10, 260));
         portfolio.add(position(microsoft, 1, 200));
 
-        Assertions.assertEquals(11, portfolio.getPosition(microsoft).getQty());
+        assertEquals(11, portfolio.getPosition(microsoft).getQty());
     }
 
     @Test
@@ -149,7 +176,7 @@ public class PortfolioPositionTest {
         portfolio.add(position(microsoft, 1, 240));
         portfolio.add(position(microsoft, 1, 220));
 
-        Assertions.assertEquals(230, portfolio.getPosition(microsoft).getAveragePx());
+        assertEquals(230, portfolio.getPosition(microsoft).getAveragePx());
     }
 
     @Test
@@ -159,7 +186,7 @@ public class PortfolioPositionTest {
         portfolio.add(position(microsoft, 1, 220));
 
         double expected = 2 * 240 + 220;
-        Assertions.assertEquals(expected, portfolio.getPosition(microsoft).getValue());
+        assertEquals(expected, portfolio.getPosition(microsoft).getValue());
     }
 
     @Test
@@ -172,8 +199,8 @@ public class PortfolioPositionTest {
         portfolio.add(position(apple, 10, 80));
         portfolio.add(position(oracle, 100, 80));
 
-        Assertions.assertEquals(3, portfolio.size());
-        Assertions.assertEquals(10010, portfolio.getTotalValue());
+        assertEquals(3, portfolio.size());
+        assertEquals(10010, portfolio.getTotalValue());
     }
 
 

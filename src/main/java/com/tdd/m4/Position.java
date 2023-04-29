@@ -28,6 +28,18 @@ public class Position {
         this.px = newAveragePx;
     }
 
+    public void sell(int qtyToSell) {
+        if(qtyToSell < 0) {
+            throw new ArithmeticException("Cannot sell negative shares");
+        }
+        if(qtyToSell > getQty()) {
+            throw new ArithmeticException("Cannot sell more shares than in position");
+        } else {
+            setQuantity(getQty() - qtyToSell);
+        }
+
+    }
+
     public double getAveragePx() {
         return this.px;
     }

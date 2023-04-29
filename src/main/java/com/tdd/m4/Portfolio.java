@@ -1,8 +1,6 @@
 package com.tdd.m4;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Portfolio {
@@ -11,10 +9,6 @@ public class Portfolio {
 
     public Portfolio() {
         positions = new HashMap<>();
-    }
-
-    public Map<String, Position> getAllPositions() {
-        return positions;
     }
 
     public void add(Position position) {
@@ -50,13 +44,17 @@ public class Portfolio {
         System.out.println(getTotalValue());
     }
 
-    public void remove(String symbol) {
+    private void remove(String symbol) {
         positions.remove(symbol);
     }
 
     public void sell(String symbol, int qtyToSell) {
-        var position = getPosition(symbol);
-        position.setQuantity(position.getQty() - qtyToSell);
+        var position = positions.get(symbol);
+        position.sell(qtyToSell);
+
+        if(position.getQty() == 0) {
+            remove(symbol);
+        }
     }
 
     public boolean containsPosition(String symbol) {
