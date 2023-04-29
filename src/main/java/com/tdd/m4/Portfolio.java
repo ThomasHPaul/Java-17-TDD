@@ -49,4 +49,19 @@ public class Portfolio {
         System.out.println("=========================");
         System.out.println(getTotalValue());
     }
+
+    public void remove(String symbol) {
+        positions.remove(symbol);
+    }
+
+    public void sell(String symbol, int qtyToSell) {
+        var position = getPosition(symbol);
+        position.setQuantity(position.getQty() - qtyToSell);
+    }
+
+    public boolean containsPosition(String symbol) {
+        return positions.containsKey(symbol);
+    }
+
+    public int size() { return positions.size(); }
 }

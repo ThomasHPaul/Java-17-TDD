@@ -2,34 +2,107 @@ package com.tdd.m4;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 public class PortfolioPositionTest {
 
-    // TODO: create single parameterized test that covers all the different scenarios for portfolioReturnsCorrectPositionCount
+    private Portfolio portfolio = new Portfolio();
+    private static final String microsoft = "MSFT";
+    private static final String apple = "AAPL";
+    private static final String oracle = "ORCL";
+
+    @ParameterizedTest
+    @MethodSource("portfolioPositionCountArgumentProvider")
+    public void portfolioReturnsCorrectPositionCount(int size, Portfolio portfolio) {
+        Assertions.assertEquals(size, portfolio.size());
+    }
+
+    private static Stream<Arguments> portfolioPositionCountArgumentProvider() {
+        var portfolio1 = new Portfolio(); // 0 positions 0 buys
+        var portfolio2 = new Portfolio(); // 1 position  1 buy
+        var portfolio3 = new Portfolio(); // 3 positions 3 buys
+        var portfolio4 = new Portfolio(); // 1 position  2 buys
+        var portfolio5 = new Portfolio(); // 3 positions 4 buys
+
+        var position1 = position(microsoft, 100, 250);
+        var position2 = position(apple, 1, 80);
+        var position3 = position(oracle, 10, 300);
+
+        portfolio2.add(position1);
+        portfolio3.add(position1);
+        portfolio3.add(position2);
+        portfolio3.add(position3);
+        portfolio4.add(position1);
+        portfolio4.add(position1);
+        portfolio5.add(position1);
+        portfolio5.add(position1);
+        portfolio5.add(position2);
+        portfolio5.add(position3);
+
+
+        return Stream.of(
+                Arguments.of(0, portfolio1),
+                Arguments.of(1, portfolio2),
+                Arguments.of(3, portfolio3),
+                Arguments.of(1, portfolio4),
+                Arguments.of(3, portfolio5)
+                        );
+    }
 
     @Test
-    public void emptyPortfolio_zeroPositions() {
+    void positionAddedThenRemovedFromEmptyPortfolio_ReturnsZeroPositions() {
+        var portfolio = new Portfolio();
+        portfolio.add(position(microsoft, 10, 120));
+        portfolio.remove(microsoft);
+
+        Assertions.assertEquals(0, portfolio.size());
+    }
+
+    @Test
+    void positionPartiallySold_PositionStillInPortfolio() {
 
         var portfolio = new Portfolio();
-        Assertions.assertEquals(0, portfolio.getPositionCount());
+        portfolio.add(position(microsoft, 10, 250));
+        portfolio.sell(microsoft, 5);
+
+        Assertions.assertTrue(portfolio.containsPosition(microsoft));
     }
 
     @Test
-    void removeTest() {
-        // add then remove stock
+    void positionPartiallySold_PositionValueUpdated() {
+
+        var portfolio = new Portfolio();
+        portfolio.add(position(microsoft, 10, 250));
+        portfolio.sell(microsoft, 5);
+
+        Assertions.assertEquals(1250, portfolio.getPosition(microsoft).getValue());
     }
 
-    //Introduce Money API, does rounding api & understands currency - jsr 354 - Money and Currency API
+    @Test
+    void positionPartiallySold_PositionHasCorrectQuantityRemaining() {
+
+        var portfolio = new Portfolio();
+        portfolio.add(position(microsoft, 10, 250));
+        portfolio.sell(microsoft, 5);
+
+        Assertions.assertEquals(5, portfolio.getPosition(microsoft).getQty());
+    }
+
+    // TODO Introduce Money API, does rounding api & understands currency - jsr 354 - Money and Currency API
 
     @Test
     void portfolioWithOnePosition_ReturnsThatPosition() {
 
         var portfolio = new Portfolio();
 
-        String symbol = "MSFT";
+        String symbol = microsoft;
 
-        portfolio.add(new Position(new Stock("MSFT"), 10, 260));
-        Assertions.assertEquals(1, portfolio.getAllPositions().size());
+        portfolio.add(position(microsoft, 10, 260));
+        Assertions.assertEquals(1, portfolio.size());
 
         Assertions.assertEquals(10, portfolio.getPosition(symbol).getQty());
         Assertions.assertEquals(260, portfolio.getPosition(symbol).getPx());
@@ -40,13 +113,13 @@ public class PortfolioPositionTest {
     public void portfolioWithTwoDifferentPositions_ReturnsThosePositions() {
         var portfolio = new Portfolio();
 
-        String microsoft = "MSFT";
+
         String apple = "AAPL";
 
-        portfolio.add(position("MSFT", 10, 260));
+        portfolio.add(position(microsoft, 10, 260));
         portfolio.add(position("AAPL", 2, 150));
 
-        Assertions.assertEquals(2, portfolio.getAllPositions().size());
+        Assertions.assertEquals(2, portfolio.size());
 
         // msft
         var microsoftPosition = portfolio.getPosition(microsoft);
@@ -65,19 +138,19 @@ public class PortfolioPositionTest {
     public void portfolioWithSameStock_ReturnsOnePosition()  {
         var portfolio = new Portfolio();
 
-        String microsoft = "MSFT";
+
 
         portfolio.add(position(microsoft, 10, 260));
         portfolio.add(position(microsoft, 5, 200));
 
-        Assertions.assertEquals(1, portfolio.getAllPositions().size());
+        Assertions.assertEquals(1, portfolio.size());
     }
 
     @Test
     public void portfolioWithSameStock_ReturnsCorrectQty()  {
         var portfolio = new Portfolio();
 
-        String microsoft = "MSFT";
+
 
         portfolio.add(position(microsoft, 10, 260));
         portfolio.add(position(microsoft, 1, 200));
@@ -89,7 +162,7 @@ public class PortfolioPositionTest {
     public void portfolioWithSameStock_ReturnsCorrectAveragePrice() {
         var portfolio = new Portfolio();
 
-        String microsoft = "MSFT";
+
 
         portfolio.add(position(microsoft, 1, 240));
         portfolio.add(position(microsoft, 1, 220));
@@ -101,7 +174,7 @@ public class PortfolioPositionTest {
     public void portfolioWithSameStock_ReturnsCorrectPositionValue() {
         var portfolio = new Portfolio();
 
-        String microsoft = "MSFT";
+
         portfolio.add(position(microsoft, 2, 240));
         portfolio.add(position(microsoft, 1, 220));
 
@@ -113,15 +186,15 @@ public class PortfolioPositionTest {
     public void complexPortfolio_ReturnsCorrectTotalValue() {
         var portfolio = new Portfolio();
 
-        portfolio.add(position("MSFT", 1, 260));
-        portfolio.add(position("MSFT", 2, 250));
+        portfolio.add(position(microsoft, 1, 260));
+        portfolio.add(position(microsoft, 2, 250));
 
         portfolio.add(position("AAPL", 5, 90));
         portfolio.add(position("AAPL", 10, 80));
 
         portfolio.add(position("ORCL", 100, 80));
 
-        Assertions.assertEquals(3, portfolio.getAllPositions().size());
+        Assertions.assertEquals(3, portfolio.size());
         Assertions.assertEquals(10010, portfolio.getTotalValue());
     }
 
