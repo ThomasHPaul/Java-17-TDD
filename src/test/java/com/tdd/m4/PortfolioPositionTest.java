@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 public class PortfolioPositionTest {
 
-    private Portfolio portfolio = new Portfolio();
+    private final Portfolio portfolio = new Portfolio();
     private static final String microsoft = "MSFT";
     private static final String apple = "AAPL";
     private static final String oracle = "ORCL";
@@ -55,7 +55,7 @@ public class PortfolioPositionTest {
 
     @Test
     void positionAddedThenRemovedFromEmptyPortfolio_ReturnsZeroPositions() {
-        var portfolio = new Portfolio();
+
         portfolio.add(position(microsoft, 10, 120));
         portfolio.remove(microsoft);
 
@@ -65,7 +65,6 @@ public class PortfolioPositionTest {
     @Test
     void positionPartiallySold_PositionStillInPortfolio() {
 
-        var portfolio = new Portfolio();
         portfolio.add(position(microsoft, 10, 250));
         portfolio.sell(microsoft, 5);
 
@@ -75,7 +74,6 @@ public class PortfolioPositionTest {
     @Test
     void positionPartiallySold_PositionValueUpdated() {
 
-        var portfolio = new Portfolio();
         portfolio.add(position(microsoft, 10, 250));
         portfolio.sell(microsoft, 5);
 
@@ -85,7 +83,6 @@ public class PortfolioPositionTest {
     @Test
     void positionPartiallySold_PositionHasCorrectQuantityRemaining() {
 
-        var portfolio = new Portfolio();
         portfolio.add(position(microsoft, 10, 250));
         portfolio.sell(microsoft, 5);
 
@@ -96,8 +93,6 @@ public class PortfolioPositionTest {
 
     @Test
     void portfolioWithOnePosition_ReturnsThatPosition() {
-
-        var portfolio = new Portfolio();
 
         String symbol = microsoft;
 
@@ -111,13 +106,9 @@ public class PortfolioPositionTest {
 
     @Test
     public void portfolioWithTwoDifferentPositions_ReturnsThosePositions() {
-        var portfolio = new Portfolio();
-
-
-        String apple = "AAPL";
 
         portfolio.add(position(microsoft, 10, 260));
-        portfolio.add(position("AAPL", 2, 150));
+        portfolio.add(position(apple, 2, 150));
 
         Assertions.assertEquals(2, portfolio.size());
 
@@ -136,9 +127,6 @@ public class PortfolioPositionTest {
 
     @Test
     public void portfolioWithSameStock_ReturnsOnePosition()  {
-        var portfolio = new Portfolio();
-
-
 
         portfolio.add(position(microsoft, 10, 260));
         portfolio.add(position(microsoft, 5, 200));
@@ -148,9 +136,6 @@ public class PortfolioPositionTest {
 
     @Test
     public void portfolioWithSameStock_ReturnsCorrectQty()  {
-        var portfolio = new Portfolio();
-
-
 
         portfolio.add(position(microsoft, 10, 260));
         portfolio.add(position(microsoft, 1, 200));
@@ -160,9 +145,6 @@ public class PortfolioPositionTest {
 
     @Test
     public void portfolioWithSameStock_ReturnsCorrectAveragePrice() {
-        var portfolio = new Portfolio();
-
-
 
         portfolio.add(position(microsoft, 1, 240));
         portfolio.add(position(microsoft, 1, 220));
@@ -172,8 +154,6 @@ public class PortfolioPositionTest {
 
     @Test
     public void portfolioWithSameStock_ReturnsCorrectPositionValue() {
-        var portfolio = new Portfolio();
-
 
         portfolio.add(position(microsoft, 2, 240));
         portfolio.add(position(microsoft, 1, 220));
@@ -184,15 +164,13 @@ public class PortfolioPositionTest {
 
     @Test
     public void complexPortfolio_ReturnsCorrectTotalValue() {
-        var portfolio = new Portfolio();
 
         portfolio.add(position(microsoft, 1, 260));
         portfolio.add(position(microsoft, 2, 250));
 
-        portfolio.add(position("AAPL", 5, 90));
-        portfolio.add(position("AAPL", 10, 80));
-
-        portfolio.add(position("ORCL", 100, 80));
+        portfolio.add(position(apple, 5, 90));
+        portfolio.add(position(apple, 10, 80));
+        portfolio.add(position(oracle, 100, 80));
 
         Assertions.assertEquals(3, portfolio.size());
         Assertions.assertEquals(10010, portfolio.getTotalValue());
